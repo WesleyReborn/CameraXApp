@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Create output options object which contains file + metadata
+        // Cria um objeto de opçoes de saida que tenha o arquivo + metadados
         val outputOptions = ImageCapture.OutputFileOptions
             .Builder(contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
             .build()
@@ -236,23 +236,3 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-private class LuminosityAnalyzer(private val listener: LumaListener) : ImageAnalysis.Analyzer {
-
-    private fun ByteBuffer.toByteArray(): ByteArray {
-        rewind() // Rewind the buffer to zero
-        val data = ByteArray(remaining())
-        get(data) // Copy the buffer into a byte array
-        return data // Return the byte array
-    }
-
-    override fun analyze(image: ImageProxy) {
-        val buffer = image.planes[0].buffer
-        val data = buffer.toByteArray()
-        val pixels = data.map { it.toInt() and 0xFF }
-        val luma = pixels.average()
-
-        listener(luma)
-
-        image.close()
-    }
-}
